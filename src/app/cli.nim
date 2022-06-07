@@ -11,7 +11,7 @@ proc cli*(): ContextRef =
     if paramCount() == 0:
         writeHelp()
         quit(0)
-    
+
     var contextObj: ContextObj
 
     for kind, key, val in getopt():
@@ -24,7 +24,7 @@ proc cli*(): ContextRef =
             of "version", "v":
                 writeVersion()
                 quit()
-            of "server-address", "s": 
+            of "server-address", "s":
                 contextObj.serverAddress = val
                 echo contextObj
             of "port", "p":
@@ -38,4 +38,3 @@ proc cli*(): ContextRef =
         else: discard
     result = ContextRef(serverAddress: contextObj.serverAddress,
                         serverPort: contextObj.serverPort)
-    
