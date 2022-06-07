@@ -1,18 +1,27 @@
-import os, commands, parseopt
+import os, commands, parseopt, logging, times
 from strutils import parseInt
 
+var logger = newRollingFileLogger("gaspipe_client_rolling.log")
+
 type
-    ContextObj = object
+    Context* = ref object
         serverAddress: string
         serverPort: int
-    ContextRef* = ref ContextObj
 
-proc cli*(): ContextRef =
+proc setServerAddress(this: Context, serverAddress: string) =
+    this.serverAddress = serverAddress
+
+proc setServerPort(this: Context, serverPort: int) =
+    this.serverPort = serverPort
+
+proc cli(): Context =
     if paramCount() == 0:
         writeHelp()
         quit(0)
 
-    var contextObj: ContextObj
+    var context: Context =
+        Context(serverAddress: "nil",
+                   serverPort: 0)
 
     for kind, key, val in getopt():
         case kind
@@ -25,16 +34,18 @@ proc cli*(): ContextRef =
                 writeVersion()
                 quit()
             of "server-address", "s":
-                contextObj.serverAddress = val
-                echo contextObj
+                context.setServerAddress(val)
             of "port", "p":
                 try:
-                    contextObj.serverPort = parseInt(val)
-                    echo contextObj
+                    context.setServerPort(parseInt(val))
                 except ValueError:
-                    echo "Invalid port number! Error: ", getCurrentExceptionMsg()
+                    logger.log(lvlError, getTime(), " :: Invalid port number provided by user. Error message: " & getCurrentExceptionMsg())
                     quit("You have provided and invalid port number. Exitting...")
             else: discard
         else: discard
-    result = ContextRef(serverAddress: contextObj.serverAddress,
-                        serverPort: contextObj.serverPort)
+    context
+
+proc run*() =
+    let Context: Context = cli()
+    echo Context.repr
+    echo("GasPipe Client v0.1.0 started!")

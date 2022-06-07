@@ -1,1 +1,5 @@
+# build folders
 bin/
+
+# logging:
+gaspipe_client_rolling.log
