@@ -1,6 +1,6 @@
 import os, commands, parseopt, logging
 from strutils import parseInt, intToStr
-from tools import doLog
+from ../tools/tools import doLog
 
 # Default port of the application
 const port: int = 2137 
