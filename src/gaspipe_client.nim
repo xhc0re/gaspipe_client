@@ -1,4 +1,6 @@
-from app/cli import run, Context
+from cli/cli import run, Context
 
 when isMainModule:
     run()
+    let message = stdin.readLine
+    echo "Sending \"", message, "\""
